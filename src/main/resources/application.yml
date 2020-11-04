@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: '@spring.profiles.active@'
+  datasource:
+    url: jdbc:postgresql://localhost:5432/intellekta_dev
+    username: intellekta
+    password: intellekta
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+        hbm2ddl:
+          auto: update
+---
+spring:
+  profiles: 'prod'
+  datasource:
+    url: jdbc:postgresql://localhost:5432/intellekta_prod
+    username: intellekta
+    password: intellekta
+    driverClassName: org.postgresql.Driver

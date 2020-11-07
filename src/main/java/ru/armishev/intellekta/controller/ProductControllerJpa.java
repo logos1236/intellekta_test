@@ -4,17 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.armishev.intellekta.jpa.Product;
-import ru.armishev.intellekta.jpa.ProductRepository;
+import ru.armishev.intellekta.jdbc.SalesPeriodJdbcRepository;
+import ru.armishev.intellekta.entity.Product;
+import ru.armishev.intellekta.jpa.ProductJpaRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping(value="product/")
-public class ProductController {
+public class ProductControllerJpa {
     @Autowired
-    ProductRepository productRepository;
+    ProductJpaRepository productRepository;
+
+    @Autowired
+    private SalesPeriodJdbcRepository salesPeriodJdbcRepository;
 
     @GetMapping("add/")
     public Product addProduct(HttpServletRequest request) {
@@ -32,5 +36,10 @@ public class ProductController {
     @GetMapping("list/")
     public List<Product> getList() {
         return productRepository.findAll();
+    }
+
+    @GetMapping("/product/sales/active")
+    public List<Product> getProductsWithActivePeriod() {
+        return salesPeriodJdbcRepository.getProductsWithActivePeriod();
     }
 }

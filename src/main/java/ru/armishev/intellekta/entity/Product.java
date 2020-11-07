@@ -1,4 +1,4 @@
-package ru.armishev.intellekta.jpa;
+package ru.armishev.intellekta.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +19,9 @@ public class Product {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    public Product(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

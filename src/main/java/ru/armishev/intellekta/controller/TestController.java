@@ -1,9 +1,7 @@
 package ru.armishev.intellekta.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.armishev.intellekta.model.Formatter;
 
 @RestController
@@ -11,6 +9,9 @@ import ru.armishev.intellekta.model.Formatter;
 public class TestController {
     @Autowired
     private Formatter formatter;
+
+    public TestController() {
+    }
 
     @GetMapping("/hello")
     public String getHello() {

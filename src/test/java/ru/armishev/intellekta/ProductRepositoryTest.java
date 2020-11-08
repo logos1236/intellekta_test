@@ -1,8 +1,6 @@
 package ru.armishev.intellekta;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,32 +21,95 @@ public class ProductRepositoryTest {
     @Autowired
     private ProductJpaRepository productJpaRepository;
 
-    @Before
+    @Test
     public void createProductTest() {
         Product product = new Product(3, "product_test");
         productJpaRepository.save(product);
+
+        Optional<Product> optionalProduct = productJpaRepository.findById(3);
+        Assert.assertTrue(optionalProduct.isPresent());
     }
 
     @Test
-    public void findAllTest() {
+    public void createProductTestRandomIdTest() {
+        try {
+            Product product = new Product(7, "product_test");
+            productJpaRepository.save(product);
+            Assert.assertTrue(true);
+        } catch (Exception e) {
+            Assert.assertTrue(false);
+        }
+    }
+
+    @Test
+    public void findAllProductTest() {
         List<Product> products = productJpaRepository.findAll();
         Assert.assertNotNull(products);
         Assert.assertEquals(3, products.size());
     }
 
     @Test
-    public void findByName() {
-        List<Product> products = productJpaRepository.findByName("product_test");
-        Assert.assertNotNull(products);
-        Assert.assertEquals(products.size(), 1);
+    public void deleteProductTest() {
+        long start_count = productJpaRepository.count();
+
+        if (start_count > 0) {
+            productJpaRepository.deleteById(1);
+            long end_count = productJpaRepository.count();
+
+            Assert.assertEquals(start_count-1, end_count);
+        } else {
+            Assert.assertEquals(start_count, 0);
+        }
     }
 
-    @After
-    public void deleteProduct() {
-        productJpaRepository.deleteById(3);
+    @Test
+    public void deleteAllProductTest() {
+        Assert.assertTrue(productJpaRepository.count() > 0);
 
-        List<Product> products = productJpaRepository.findAll();
+        productJpaRepository.deleteAll();
+        Assert.assertEquals(productJpaRepository.count(), 0);
+    }
+
+    @Test
+    public void deleteProductByObjectTest() {
+        Product product = new Product(3, "bike_test");
+        productJpaRepository.delete(product);
+
+        List<Product> products = productJpaRepository.findByName("bike_test");
+        Assert.assertEquals(0, products.size());
+    }
+
+    @Test
+    public void findAllProductByNameTest() {
+        List<Product> products = productJpaRepository.findByName("car_test");
         Assert.assertNotNull(products);
         Assert.assertEquals(2, products.size());
+    }
+
+    @Test
+    public void findProductByNameTest() {
+        List<Product> products = productJpaRepository.findByName("car_test");
+        Assert.assertNotNull(products);
+        Assert.assertEquals(products.get(0).getName(), "car_test");
+    }
+
+    @Test
+    public void findProductByNameNegativeTest() {
+        List<Product> products = productJpaRepository.findByName("car_test_1");
+        Assert.assertNotNull(products);
+        Assert.assertEquals(products.size(), 0);
+    }
+
+    @Test
+    public void findProductByIdTest() {
+        Optional<Product> optionalProduct = productJpaRepository.findById(1);
+        Assert.assertTrue(optionalProduct.isPresent());
+        Assert.assertEquals(optionalProduct.get().getId(), 1);
+    }
+
+    @Test
+    public void findByIdNegativeTest() {
+        Optional<Product> optionalProduct = productJpaRepository.findById(-1);
+        Assert.assertFalse(optionalProduct.isPresent());
     }
 }

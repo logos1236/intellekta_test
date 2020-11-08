@@ -10,7 +10,7 @@ CREATE TABLE product
 
 CREATE TABLE sales_period
 (
-    id integer NOT NULL,
+    id integer auto_increment NOT NULL,
     price bigint NOT NULL,
     date_from date NOT NULL,
     date_to date,

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import ru.armishev.intellekta.entity.Product;
 import ru.armishev.intellekta.entity.SalesPeriodJpaDemo;
 
 import java.util.*;
@@ -21,4 +22,6 @@ public interface SalesPeriodJpaRepository extends JpaRepository<SalesPeriodJpaDe
 
     @Query(value = "SELECT MAX(id) from sales_period", nativeQuery = true)
     Integer getMaxId();
+
+    List<SalesPeriodJpaDemo> findByPrice(long price);
 }

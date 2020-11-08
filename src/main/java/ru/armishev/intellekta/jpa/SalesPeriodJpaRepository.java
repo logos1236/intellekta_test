@@ -18,4 +18,7 @@ public interface SalesPeriodJpaRepository extends JpaRepository<SalesPeriodJpaDe
     List<SalesPeriodJpaDemo> findByDateToIsNull();
 
     List<SalesPeriodJpaDemo> findByProductName(String productName);
+
+    @Query(value = "SELECT MAX(id) from sales_period", nativeQuery = true)
+    Integer getMaxId();
 }

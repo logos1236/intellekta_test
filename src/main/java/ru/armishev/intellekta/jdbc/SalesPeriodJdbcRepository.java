@@ -64,4 +64,16 @@ public class SalesPeriodJdbcRepository {
                 salesPeriodJdbcDemo.getDateTo(),
                 salesPeriodJdbcDemo.getProduct());
     }
+
+    public List<SalesPeriodJdbcDemo> getByProductName(String name) {
+        return jdbcTemplate.query(String.format("SELECT sp.* FROM sales_period sp " +
+                "INNER JOIN product p ON sp.product = p.id " +
+                "WHERE p.name LIKE '%s'", name), (rs, rNUm)->{
+            return new SalesPeriodJdbcDemo(rs.getLong("id"),
+                    rs.getLong("price"),
+                    rs.getDate("date_from"),
+                    rs.getDate("date_to"),
+                    rs.getInt("product"));
+        });
+    }
 }

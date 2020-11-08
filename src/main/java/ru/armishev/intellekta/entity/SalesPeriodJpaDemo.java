@@ -31,4 +31,12 @@ public class SalesPeriodJpaDemo {
     @OneToOne
     @JoinColumn(name="product", referencedColumnName = "id", nullable = false)
     private Product product;
+
+    public SalesPeriodJpaDemo(long id, long price, Date dateFrom, Date dateTo, Product product) {
+        this.id = id;
+        this.price = price;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.product = product;
+    }
 }

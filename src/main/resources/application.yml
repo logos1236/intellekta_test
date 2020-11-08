@@ -12,7 +12,7 @@ spring:
       hibernate:
         format-sql: true
         hbm2ddl:
-          auto: update
+          auto: none
 ---
 spring:
   profiles: 'prod'

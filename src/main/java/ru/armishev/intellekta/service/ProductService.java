@@ -60,9 +60,9 @@ public class ProductService {
             throw new EntityIllegalArgumentException("Создаваемый объект не может быть 0");
         }
 
-        Product existedProduct = productJpaRepository.getOne(product.getId());
-        if (existedProduct != null) {
-            throw new EntityAlreadyExistException(Product.TYPE_NAME, product.getId());
+        Optional<Product> optionalExistedProduct = productJpaRepository.findById(product.getId());
+        if (optionalExistedProduct.isPresent()) {
+            throw new EntityAlreadyExistException(Product.TYPE_NAME, optionalExistedProduct.get().getId());
         }
 
         return productJpaRepository.save(product);

@@ -33,6 +33,12 @@ public class ProductServiceTest {
         Assert.assertEquals(3, products.size());
     };
 
+    @Test
+    public void findByIdTest(){
+        Product product = productService.findById(1);
+        Assert.assertEquals(1, product.getId());
+    };
+
     @Test(expected = EntityIllegalArgumentException.class)
     public void findByIdNullTest(){
         productService.findById(null);
@@ -45,7 +51,7 @@ public class ProductServiceTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void findByIdNotFindProductTest(){
-        productService.findById(123);
+        productService.findById(-1);
     };
 
     @Test(expected = EntityIllegalArgumentException.class)
@@ -67,14 +73,38 @@ public class ProductServiceTest {
         productService.create(product);
     }
 
+    @Test
+    public void createProduct() {
+        int productsCountStart = productService.findAll().size();
+
+        Product product = new Product(4, "Test");
+        productService.create(product);
+        int productsCountEnd = productService.findAll().size();
+
+        Assert.assertEquals(productsCountStart+1, productsCountEnd);
+    }
+
     @Test(expected = EntityNotFoundException.class)
     public void deleteNotExistProductException() {
-        productService.delete(123);
+        productService.delete(-1);
     }
 
     @Test(expected = EntityHasDetailException.class)
     public void deleteProductHasDetailExceptionException() {
         productService.delete(2);
+    }
+
+    @Test
+    public void deleteProduct() {
+        int productsCountStart = productService.findAll().size();
+        if (productsCountStart == 0) {
+            Assert.fail();
+        }
+
+        productService.delete(3);
+        int productsCountEnd = productService.findAll().size();
+
+        Assert.assertEquals(productsCountStart-1, productsCountEnd);
     }
 
 }

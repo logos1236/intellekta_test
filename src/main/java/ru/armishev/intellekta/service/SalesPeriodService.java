@@ -24,7 +24,7 @@ public class SalesPeriodService {
     }
 
     public SalesPeriod findById(Object id) {
-        SalesPeriod salesPeriod;
+        SalesPeriod salesPeriod = null;
 
         if (id == null) {
             throw new EntityIllegalArgumentException("Идентификатор объекта не может быть null");
@@ -32,17 +32,18 @@ public class SalesPeriodService {
 
         long parseId;
         try {
-            parseId = Long.valueOf((String) id);
+            parseId = Long.valueOf(String.valueOf(id));
         } catch (NumberFormatException ex) {
             throw new EntityIllegalArgumentException(String.format("Не удалось преобразовать идентификатор " +
                     "к нужному типу, текст ошибки: %s", ex));
         }
 
-        salesPeriod = salesPeriodJpaRepository.getOne(parseId);
-
-        if (salesPeriod == null) {
+        Optional<SalesPeriod> optionalSalesPeriod = salesPeriodJpaRepository.findById(parseId);
+        if (!optionalSalesPeriod.isPresent()) {
             throw new EntityNotFoundException(Product.TYPE_NAME, parseId);
         }
+
+        salesPeriod = optionalSalesPeriod.get();
 
         return salesPeriod;
     }
@@ -68,14 +69,9 @@ public class SalesPeriodService {
             throw new EntityIllegalArgumentException("Дата начала периода не может быть null");
         }
 
-        SalesPeriod existedSalesPeriod = salesPeriodJpaRepository.getOne(salesPeriod.getId());
-        if (existedSalesPeriod != null) {
-            throw new EntityAlreadyExistException(Product.TYPE_NAME, existedSalesPeriod.getId());
-        }
-
-        List<SalesPeriod> lastSalesPeriods = salesPeriodJpaRepository.findByDateToIsNullAndProductId(existedSalesPeriod.getProduct().getId());
-        if (!lastSalesPeriods.isEmpty()) {
-            throw new EntityConflictException(String.format("В системе имеются открытые торговые периоды для продукта с id %s", salesPeriod.getProduct().getId()));
+        Optional<SalesPeriod> existedSalesPeriod = salesPeriodJpaRepository.findById(salesPeriod.getId());
+        if (existedSalesPeriod.isPresent()) {
+            throw new EntityAlreadyExistException(SalesPeriod.TYPE_NAME, existedSalesPeriod.get().getId());
         }
 
         return salesPeriodJpaRepository.save(salesPeriod);
@@ -83,6 +79,11 @@ public class SalesPeriodService {
 
     public void delete(Object id) {
         SalesPeriod salesPeriod = findById(id);
+
+        List<SalesPeriod> lastSalesPeriods = salesPeriodJpaRepository.findByDateToIsNullAndProductId(salesPeriod.getProduct().getId());
+        if (!lastSalesPeriods.isEmpty()) {
+            throw new EntityConflictException(String.format("В системе имеются открытые торговые периоды для продукта с id %s", salesPeriod.getProduct().getId()));
+        }
 
         salesPeriodJpaRepository.delete(salesPeriod);
     }

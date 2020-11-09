@@ -30,27 +30,25 @@ public class ProductService {
     }
 
     public Product findById(Object id) {
-        Product product;
-
         if (id == null) {
             throw new EntityIllegalArgumentException("Идентификатор объекта не может быть null");
         }
 
         Integer parseId;
         try {
-            parseId = Integer.valueOf((String) id);
+            parseId = Integer.parseInt(String.valueOf(id));
         } catch (NumberFormatException ex) {
             throw new EntityIllegalArgumentException(String.format("Не удалось преобразовать идентификатор " +
                     "к нужному типу, текст ошибки: %s", ex));
         }
 
-        product = productJpaRepository.getOne(parseId);
-
-        if (product == null) {
+        Optional<Product> optionalProduct = productJpaRepository.findById(parseId);
+        if (!productJpaRepository.findById(parseId).isPresent()) {
             throw new EntityNotFoundException(Product.TYPE_NAME, parseId);
         }
 
-        return product;
+
+        return optionalProduct.get();
     }
 
     public Product create(Product product) {

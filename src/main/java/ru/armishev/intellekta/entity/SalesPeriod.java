@@ -13,7 +13,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SalesPeriodJpaDemo {
+public class SalesPeriod {
+    public static String TYPE_NAME = "Торговый период";
+
     @Id
     /*@Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sales_period_id_seq")
@@ -35,7 +37,7 @@ public class SalesPeriodJpaDemo {
     @JoinColumn(name="product", referencedColumnName = "id", nullable = false)
     private Product product;
 
-    public SalesPeriodJpaDemo(long id, long price, Date dateFrom, Date dateTo, Product product) {
+    public SalesPeriod(long id, long price, Date dateFrom, Date dateTo, Product product) {
         this.id = id;
         this.price = price;
         this.dateFrom = dateFrom;
@@ -47,7 +49,7 @@ public class SalesPeriodJpaDemo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SalesPeriodJpaDemo that = (SalesPeriodJpaDemo) o;
+        SalesPeriod that = (SalesPeriod) o;
         return id == that.id;
     }
 
@@ -65,5 +67,45 @@ public class SalesPeriodJpaDemo {
                 ", dateTo=" + dateTo +
                 ", product=" + product +
                 '}';
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public Date getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(Date dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public Date getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(Date dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

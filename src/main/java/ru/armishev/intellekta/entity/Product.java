@@ -13,6 +13,8 @@ import java.util.*;
 @Getter
 @Setter
 public class Product {
+    public static String TYPE_NAME = "Продукт";
+
     @Id
     @Column(name = "id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +47,21 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

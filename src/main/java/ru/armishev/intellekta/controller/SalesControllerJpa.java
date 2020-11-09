@@ -3,8 +3,7 @@ package ru.armishev.intellekta.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.armishev.intellekta.entity.Product;
-import ru.armishev.intellekta.entity.SalesPeriodJdbcDemo;
-import ru.armishev.intellekta.entity.SalesPeriodJpaDemo;
+import ru.armishev.intellekta.entity.SalesPeriod;
 import ru.armishev.intellekta.jpa.ProductJpaRepository;
 import ru.armishev.intellekta.jpa.SalesPeriodJpaRepository;
 
@@ -25,20 +24,20 @@ public class SalesControllerJpa {
     ProductJpaRepository productRepository;
 
     @GetMapping("")
-    public List<SalesPeriodJpaDemo> getSalesPeriodJpa() {
+    public List<SalesPeriod> getSalesPeriodJpa() {
         return salesPeriodJpaRepository.findAll();
     }
 
     @PostMapping("")
-    public SalesPeriodJpaDemo addSalesPeriodJpa(@RequestBody SalesPeriodJpaDemo salesPeriodJpaDemo) {
-        return salesPeriodJpaRepository.save(salesPeriodJpaDemo);
+    public SalesPeriod addSalesPeriodJpa(@RequestBody SalesPeriod salesPeriod) {
+        return salesPeriodJpaRepository.save(salesPeriod);
     }
 
     @GetMapping("init/")
-    public List<SalesPeriodJpaDemo> initSalesPeriods() {
+    public List<SalesPeriod> initSalesPeriods() {
         List<Product> products = productRepository.findAll();
         int id = salesPeriodJpaRepository.getMaxId();
-        List<SalesPeriodJpaDemo> result = new ArrayList<>();
+        List<SalesPeriod> result = new ArrayList<>();
 
         for(int i=0; i<10; i++) {
             int minusDateFrom = ThreadLocalRandom.current().nextInt(100, 500 + 1);
@@ -49,7 +48,7 @@ public class SalesControllerJpa {
             Date dateTo = Date.from(Instant.now().minus(Duration.ofDays(minusDateTo)));
             Product product = (products.size() > 0) ? products.get(ThreadLocalRandom.current().nextInt(0, products.size())) : null;
 
-            result.add(new SalesPeriodJpaDemo(++id, price, dateFrom, dateTo, product));
+            result.add(new SalesPeriod(++id, price, dateFrom, dateTo, product));
         }
 
         if (!result.isEmpty()) {
@@ -75,12 +74,12 @@ public class SalesControllerJpa {
     }
 
     @GetMapping("active/")
-    public List<SalesPeriodJpaDemo> findByDateToIsNull() {
+    public List<SalesPeriod> findByDateToIsNull() {
         return salesPeriodJpaRepository.findByDateToIsNull();
     }
 
     @GetMapping("by-product-name/")
-    public List<SalesPeriodJpaDemo> findByProductName(@RequestParam(name = "name") String name) {
+    public List<SalesPeriod> findByProductName(@RequestParam(name = "name") String name) {
         return salesPeriodJpaRepository.findByProductName(name);
     }
 }

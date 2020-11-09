@@ -3,7 +3,6 @@ package ru.armishev.intellekta.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.armishev.intellekta.entity.SalesPeriodJdbcDemo;
-import ru.armishev.intellekta.entity.SalesPeriodJpaDemo;
 import ru.armishev.intellekta.jpa.ProductJpaRepository;
 import ru.armishev.intellekta.jdbc.SalesPeriodJdbcRepository;
 import ru.armishev.intellekta.entity.Product;

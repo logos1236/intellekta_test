@@ -5,23 +5,27 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.armishev.intellekta.entity.Product;
-import ru.armishev.intellekta.entity.SalesPeriodJpaDemo;
+import ru.armishev.intellekta.entity.SalesPeriod;
 
 import java.util.*;
 
 @Repository
-public interface SalesPeriodJpaRepository extends JpaRepository<SalesPeriodJpaDemo, Long> {
+public interface SalesPeriodJpaRepository extends JpaRepository<SalesPeriod, Long> {
     @Query(value = "SELECT MAX(price) from sales_period where product = :productId", nativeQuery = true)
     Integer getMaxPriceFromProductId(@Param("productId") long productId);
 
     boolean existsByPrice(long price);
 
-    List<SalesPeriodJpaDemo> findByDateToIsNull();
+    List<SalesPeriod> findByDateToIsNull();
 
-    List<SalesPeriodJpaDemo> findByProductName(String productName);
+    List<SalesPeriod> findByProductName(String productName);
 
     @Query(value = "SELECT MAX(id) from sales_period", nativeQuery = true)
     Integer getMaxId();
 
-    List<SalesPeriodJpaDemo> findByPrice(long price);
+    List<SalesPeriod> findByPrice(long price);
+
+    List<SalesPeriod> findByProduct(Product product);
+
+    List<SalesPeriod> findByDateToIsNullAndProductId(int productId);
 }

@@ -1,4 +1,4 @@
-package ru.armishev.intellekta;
+package ru.armishev.intellekta.repository;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.armishev.intellekta.config.TestConfig;
 import ru.armishev.intellekta.entity.Product;
 import ru.armishev.intellekta.jpa.ProductJpaRepository;
 

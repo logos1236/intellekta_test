@@ -13,6 +13,7 @@ import ru.armishev.intellekta.entity.Product;
 import ru.armishev.intellekta.entity.SalesPeriod;
 import ru.armishev.intellekta.exceptions.*;
 import ru.armishev.intellekta.jpa.ProductJpaRepository;
+import ru.armishev.intellekta.service.impl.DefaultSalesPeriodService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,44 +25,44 @@ import java.util.Optional;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @Sql({"/schema.sql", "/data.sql"})
-public class SalesPeriodServiceTest {
+public class DefaultSalesPeriodServiceTest {
     @Autowired
-    private SalesPeriodService salesPeriodService;
+    private DefaultSalesPeriodService defaultSalesPeriodService;
 
     @Autowired
     private ProductJpaRepository productJpaRepository;
 
     @Test
     public void findAllTest(){
-        List<SalesPeriod> products = salesPeriodService.findAll();
+        List<SalesPeriod> products = defaultSalesPeriodService.findAll();
 
         Assert.assertEquals(6, products.size());
     };
 
     @Test
     public void findByIdTest(){
-        SalesPeriod salesPeriod = salesPeriodService.findById(1);
+        SalesPeriod salesPeriod = defaultSalesPeriodService.findById(1);
         Assert.assertEquals(1, salesPeriod.getId());
     };
 
     @Test(expected = EntityIllegalArgumentException.class)
     public void findByIdNullTest(){
-        salesPeriodService.findById(null);
+        defaultSalesPeriodService.findById(null);
     };
 
     @Test(expected = EntityIllegalArgumentException.class)
     public void findByIdNotIntegerIdTest(){
-        salesPeriodService.findById("123String");
+        defaultSalesPeriodService.findById("123String");
     };
 
     @Test(expected = EntityNotFoundException.class)
     public void findByIdNotFindSalesPeriodServiceTest(){
-        salesPeriodService.findById(-1);
+        defaultSalesPeriodService.findById(-1);
     };
 
     @Test(expected = EntityIllegalArgumentException.class)
     public void createNullSalesPeriodException() {
-        salesPeriodService.create(null);
+        defaultSalesPeriodService.create(null);
     }
 
     @Test(expected = EntityIllegalArgumentException.class)
@@ -71,7 +72,7 @@ public class SalesPeriodServiceTest {
 
         SalesPeriod salesPeriod = new SalesPeriod(7, 300, dateFrom, dateTo, null);
 
-        salesPeriodService.create(salesPeriod);
+        defaultSalesPeriodService.create(salesPeriod);
     }
 
     @Test(expected = EntityIllegalArgumentException.class)
@@ -82,7 +83,7 @@ public class SalesPeriodServiceTest {
 
         SalesPeriod salesPeriod = new SalesPeriod(7, 300, dateFrom, dateTo, product);
 
-        salesPeriodService.create(salesPeriod);
+        defaultSalesPeriodService.create(salesPeriod);
     }
 
     @Test(expected = EntityIllegalArgumentException.class)
@@ -94,51 +95,51 @@ public class SalesPeriodServiceTest {
 
         SalesPeriod salesPeriod = new SalesPeriod(7, 300, dateFrom, dateTo, optionalProduct.get());
 
-        salesPeriodService.create(salesPeriod);
+        defaultSalesPeriodService.create(salesPeriod);
     }
 
     @Test(expected = EntityAlreadyExistException.class)
     public void createExistProductException() {
-        SalesPeriod existedSalesPeriod = salesPeriodService.findById(1);
+        SalesPeriod existedSalesPeriod = defaultSalesPeriodService.findById(1);
         System.out.println(existedSalesPeriod);
 
-        salesPeriodService.create(existedSalesPeriod);
+        defaultSalesPeriodService.create(existedSalesPeriod);
     }
 
     @Test
     public void createSalesPeriod() {
-        int salesPeriodCountStart = salesPeriodService.findAll().size();
+        int salesPeriodCountStart = defaultSalesPeriodService.findAll().size();
 
         Date dateFrom = Date.from(Instant.now().minus(Duration.ofDays(10)));;
         Date dateTo = Date.from(Instant.now().minus(Duration.ofDays(5)));
         Optional<Product> optionalProduct = productJpaRepository.findById(1);
         Assert.assertTrue(optionalProduct.isPresent());
         SalesPeriod salesPeriod = new SalesPeriod(7, 300, dateFrom, dateTo, optionalProduct.get());
-        salesPeriodService.create(salesPeriod);
-        int salesPeriodCountEnd = salesPeriodService.findAll().size();
+        defaultSalesPeriodService.create(salesPeriod);
+        int salesPeriodCountEnd = defaultSalesPeriodService.findAll().size();
 
         Assert.assertEquals(salesPeriodCountStart+1, salesPeriodCountEnd);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void deleteNotExistSalesPeriodException() {
-        salesPeriodService.delete(-1);
+        defaultSalesPeriodService.delete(-1);
     }
 
     @Test(expected = EntityConflictException.class)
     public void deleteSalesPeriodHasDetailExceptionException() {
-        salesPeriodService.delete(4);
+        defaultSalesPeriodService.delete(4);
     }
 
     @Test
     public void deleteSalesPeriod() {
-        int productsCountStart = salesPeriodService.findAll().size();
+        int productsCountStart = defaultSalesPeriodService.findAll().size();
         if (productsCountStart == 0) {
             Assert.fail();
         }
 
-        salesPeriodService.delete(5);
-        int productsCountEnd = salesPeriodService.findAll().size();
+        defaultSalesPeriodService.delete(5);
+        int productsCountEnd = defaultSalesPeriodService.findAll().size();
 
         Assert.assertEquals(productsCountStart-1, productsCountEnd);
     }

@@ -17,9 +17,6 @@ public class SalesPeriod {
     public static String TYPE_NAME = "Торговый период";
 
     @Id
-    /*@Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sales_period_id_seq")
-    @SequenceGenerator(name="sales_period_id_seq", sequenceName = "sales_period_id_seq", allocationSize = 1)*/
     @Column(name = "id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

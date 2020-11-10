@@ -1,11 +1,13 @@
 package ru.armishev.intellekta.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.armishev.intellekta.entity.Product;
 import ru.armishev.intellekta.entity.SalesPeriod;
-import ru.armishev.intellekta.jpa.ProductJpaRepository;
 import ru.armishev.intellekta.jpa.SalesPeriodJpaRepository;
+import ru.armishev.intellekta.service.ProductService;
+import ru.armishev.intellekta.service.SalesPeriodService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,68 +20,64 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequestMapping(value="sales/jpa/")
 public class SalesControllerJpa {
     @Autowired
-    private SalesPeriodJpaRepository salesPeriodJpaRepository;
+    private SalesPeriodService salesPeriodService;
 
-    @Autowired
-    ProductJpaRepository productRepository;
-
-    @GetMapping("")
+    @GetMapping
     public List<SalesPeriod> getSalesPeriodJpa() {
-        return salesPeriodJpaRepository.findAll();
+        return salesPeriodService.findAll();
     }
 
-    @PostMapping("")
-    public SalesPeriod addSalesPeriodJpa(@RequestBody SalesPeriod salesPeriod) {
-        return salesPeriodJpaRepository.save(salesPeriod);
+    @GetMapping("{id}")
+    public SalesPeriod getSalesPeriodJpaId(@PathVariable int id) {
+        return salesPeriodService.findById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public SalesPeriod create(@RequestBody SalesPeriod salesPeriod) {
+        return salesPeriodService.create(salesPeriod);
     }
 
     @GetMapping("init/")
-    public List<SalesPeriod> initSalesPeriods() {
-        List<Product> products = productRepository.findAll();
-        int id = salesPeriodJpaRepository.getMaxId();
-        List<SalesPeriod> result = new ArrayList<>();
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<SalesPeriod> init() {
+        return salesPeriodService.init();
+    }
 
-        for(int i=0; i<10; i++) {
-            int minusDateFrom = ThreadLocalRandom.current().nextInt(100, 500 + 1);
-            int minusDateTo = ThreadLocalRandom.current().nextInt(100, minusDateFrom);
-
-            int price = ThreadLocalRandom.current().nextInt(40, 500 + 1);
-            Date dateFrom = Date.from(Instant.now().minus(Duration.ofDays(minusDateFrom)));
-            Date dateTo = Date.from(Instant.now().minus(Duration.ofDays(minusDateTo)));
-            Product product = (products.size() > 0) ? products.get(ThreadLocalRandom.current().nextInt(0, products.size())) : null;
-
-            result.add(new SalesPeriod(++id, price, dateFrom, dateTo, product));
-        }
-
-        if (!result.isEmpty()) {
-            salesPeriodJpaRepository.saveAll(result);
-        }
-
-        return salesPeriodJpaRepository.findAll();
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public SalesPeriod update(@RequestBody SalesPeriod salesPeriod) {
+        return salesPeriodService.update(salesPeriod);
     }
 
     @GetMapping("count/")
     public long getSalesCount() {
-        return salesPeriodJpaRepository.count();
+        return salesPeriodService.count();
     }
 
     @GetMapping("max/price/")
-    public Integer getMaxPriceByProductId() {
-        return salesPeriodJpaRepository.getMaxPriceFromProductId(1);
+    public Integer getMaxPriceByProductId(@RequestParam(name = "product_id") int product_id) {
+        return salesPeriodService.getMaxPriceByProductId(product_id);
     }
 
     @GetMapping("exists/price/")
     public boolean existsByPrice(@RequestParam(name = "price") int price) {
-        return salesPeriodJpaRepository.existsByPrice(price);
+        return salesPeriodService.existsByPrice(price);
     }
 
     @GetMapping("active/")
     public List<SalesPeriod> findByDateToIsNull() {
-        return salesPeriodJpaRepository.findByDateToIsNull();
+        return salesPeriodService.findByDateToIsNull();
     }
 
     @GetMapping("by-product-name/")
     public List<SalesPeriod> findByProductName(@RequestParam(name = "name") String name) {
-        return salesPeriodJpaRepository.findByProductName(name);
+        return salesPeriodService.findByProductName(name);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id) {
+        salesPeriodService.delete(id);
     }
 }

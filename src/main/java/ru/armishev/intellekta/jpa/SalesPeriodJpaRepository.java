@@ -21,7 +21,7 @@ public interface SalesPeriodJpaRepository extends JpaRepository<SalesPeriod, Lon
     List<SalesPeriod> findByProductName(String productName);
 
     @Query(value = "SELECT MAX(id) from sales_period", nativeQuery = true)
-    Integer getMaxId();
+    long getMaxId();
 
     List<SalesPeriod> findByPrice(long price);
 

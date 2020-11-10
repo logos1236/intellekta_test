@@ -2,6 +2,7 @@ package ru.armishev.intellekta.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.armishev.intellekta.annotation.Loggable;
 import ru.armishev.intellekta.entity.Product;
 import ru.armishev.intellekta.entity.SalesPeriod;
 import ru.armishev.intellekta.exceptions.EntityAlreadyExistException;
@@ -26,10 +27,12 @@ public class DefaultProductService implements ProductService {
         this.salesPeriodJpaRepository = salesPeriodJpaRepository;
     }
 
+    @Loggable
     public List<Product> findAll() {
         return productJpaRepository.findAll();
     }
 
+    @Loggable
     public Product findById(Object id) {
         if (id == null) {
             throw new EntityIllegalArgumentException("Идентификатор объекта не может быть null");
